@@ -1,0 +1,31 @@
+diff -Npru a/src/wl/sys/wl_cfg80211_hybrid.c b/src/wl/sys/wl_cfg80211_hybrid.c
+--- a/src/wl/sys/wl_cfg80211_hybrid.c	2014-06-26 06:42:08.000000000 -0400
++++ b/src/wl/sys/wl_cfg80211_hybrid.c	2014-07-21 13:37:45.204564696 -0400
+@@ -1450,7 +1450,10 @@ wl_cfg80211_get_station(struct wiphy *wi
+ 		memset(&scb_val, 0, sizeof(scb_val));
+ 		err = wl_dev_ioctl(dev, WLC_GET_RSSI, &scb_val, sizeof(scb_val_t));
+ 		if (err) {
+-			WL_DBG(("Could not get rssi (%d)\n", err));
++			if (err != -EINVAL) {
++				/* Don't fill syslog with EINVAL errors */
++				WL_ERR(("Could not get rssi (%d)\n", err));
++			}
+ 			return err;
+ 		}
+ 		rssi = dtoh32(scb_val.val);
+diff -Npru a/src/wl/sys/wl_linux.c b/src/wl/sys/wl_linux.c
+--- a/src/wl/sys/wl_linux.c	2014-06-26 06:42:08.000000000 -0400
++++ b/src/wl/sys/wl_linux.c	2014-07-21 13:41:57.551456600 -0400
+@@ -1651,11 +1651,7 @@ wl_ioctl(struct net_device *dev, struct 
+ 	}
+ 
+ 	WL_LOCK(wl);
+-	if (!capable(CAP_NET_ADMIN)) {
+-		bcmerror = BCME_EPERM;
+-	} else {
+-		bcmerror = wlc_ioctl(wl->wlc, ioc.cmd, buf, ioc.len, wlif->wlcif);
+-	}
++	bcmerror = wlc_ioctl(wl->wlc, ioc.cmd, buf, ioc.len, wlif->wlcif);
+ 	WL_UNLOCK(wl);
+ 
+ done1:
