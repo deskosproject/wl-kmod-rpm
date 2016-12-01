@@ -6,11 +6,11 @@
 
 Name:    %{kmod_name}-kmod
 Version: 6_30_223_271
-Release: 2%{?dist}
+Release: 2.1%{?dist}
 Group:   System Environment/Kernel
 License: Broadcom
 Summary: %{kmod_name} kernel module(s)
-URL:     http://www.broadcom.com/support/802.11/linux_sta.php
+URL:     http://www.broadcom.com/support/802.11/
 
 BuildRequires: redhat-rpm-config, kernel-abi-whitelists, perl
 ExclusiveArch: x86_64
@@ -138,6 +138,9 @@ done
 %{__rm} -rf %{buildroot}
 
 %changelog
+* Thu Dec 1 2016 Ricardo Arguello <rarguello@deskosproject.org> - 6_30_223_271-2.1
+- Rebuilt for DeskOS
+
 * Thu Nov 19 2015 S.Tindall <s10dal@elrepo.org> - 6_30_223_271-2
 - Updated to build for EL 7.2
 

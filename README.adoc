@@ -1,0 +1,6 @@
+= DeskOS: wl-kmod RPM
+
+This is the _wl-kmod_ RPM package for the *DeskOS* operating system.
+
+Upstream comes from ELRepo:
+http://elrepo.org/tiki/wl-kmod
