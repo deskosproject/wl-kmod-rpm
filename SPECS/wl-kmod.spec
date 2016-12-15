@@ -6,7 +6,7 @@
 
 Name:    %{kmod_name}-kmod
 Version: 6_30_223_271
-Release: 2.1%{?dist}
+Release: 3.1%{?dist}
 Group:   System Environment/Kernel
 License: Broadcom
 Summary: %{kmod_name} kernel module(s)
@@ -27,6 +27,7 @@ Source10: kmodtool-%{kmod_name}-el7.sh
 
 # Patches.
 Patch0:  wl-kmod-fix-ioctl-handling.patch
+Patch1:  wl-kmod-kernel_4.7_IEEE80211_BAND_to_NL80211_BAND.patch 
 
 # Magic hidden here.
 %{expand:%(sh %{SOURCE10} rpmtemplate %{kmod_name} %{kversion} "")}
@@ -48,6 +49,7 @@ of the same variant of the Linux kernel and not on any one specific build.
 %setup -q -D -T -a 1
 %endif
 %patch0 -p1
+%patch1 -p1
 
 # Define kvl & kvr for use below in "patching" logicals
 %define kvl %(echo %{kversion} | cut -d"-" -f1)
@@ -71,6 +73,12 @@ of the same variant of the Linux kernel and not on any one specific build.
 #  Apply to EL 7.2 point release and later
 %{__sed} -i 's/ < KERNEL_VERSION(3, 18, 0)/ < KERNEL_VERSION(3, 9, 0)/' src/wl/sys/wl_cfg80211_hybrid.c
 %{__sed} -i 's/ >= KERNEL_VERSION(4, 0, 0)/ >= KERNEL_VERSION(3, 10, 0)/' src/wl/sys/wl_cfg80211_hybrid.c
+%endif
+%if %{kvr} >= 514
+#  Apply to EL 7.3 point release and later
+%{__sed} -i 's/ < KERNEL_VERSION(4,2,0)/ < KERNEL_VERSION(3, 9, 0)/' src/wl/sys/wl_cfg80211_hybrid.c
+%{__sed} -i 's/ >= KERNEL_VERSION(4, 7, 0)/ >= KERNEL_VERSION(3, 10, 0)/' src/wl/sys/wl_cfg80211_hybrid.c
+#
 %endif
 %else
 echo "This specification file has been written for use with RHEL 7 kernels only."
@@ -138,8 +146,12 @@ done
 %{__rm} -rf %{buildroot}
 
 %changelog
-* Thu Dec 1 2016 Ricardo Arguello <rarguello@deskosproject.org> - 6_30_223_271-2.1
+* Wed Dec 14 2016 Ricardo Arguello <rarguello@deskosproject.org> - 6_30_223_271-3.1
 - Rebuilt for DeskOS
+
+* Wed Nov 9 2016 S.Tindall <s10dal@elrepo.org> - 6_30_223_271-3
+- Added modified Fedora 23 RPMFusion NonFree wl-kmod-005_kernel_4.7_IEEE80211_BAND_to_NL80211_BAND.patch (from wl-kmod-6.30.223.271-7.fc23.src.rpm)
+- Updated to build for EL 7.3
 
 * Thu Nov 19 2015 S.Tindall <s10dal@elrepo.org> - 6_30_223_271-2
 - Updated to build for EL 7.2

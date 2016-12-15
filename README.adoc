@@ -4,3 +4,14 @@ This is the _wl-kmod_ RPM package for the *DeskOS* operating system.
 
 Upstream comes from ELRepo:
 http://elrepo.org/tiki/wl-kmod
+
+== How to compile:
+
+----
+$ sudo yum -y group install 'Development Tools'
+$ sudo yum -y install redhat-lsb kernel-abi-whitelists
+$ sudo yum -y install kernel-devel-$(uname -r)
+$ mkdir -p ~/rpmbuild/{BUILD,RPMS,SPECS,SOURCES,SRPMS}
+$ echo -e "%_topdir $(echo $HOME)/rpmbuild\n%dist .el$(lsb_release -s -r|cut -d"." -f1).deskos" >> ~/.rpmmacros
+$ rpmbuild -ba --define 'packager DeskOS Project' SPECS/wl-kmod.spec
+----
